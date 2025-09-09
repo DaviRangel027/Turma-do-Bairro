@@ -1,4 +1,3 @@
-// Variáveis e funções para comunicação com o backend Python
 const API_URL = 'http://127.0.0.1:5000/api'; // URL do seu servidor Flask
 let currentUser = null;
 
@@ -23,32 +22,16 @@ window.renderAuthSection = async function() {
         `;
     } else {
         authSection.innerHTML = `
-            <button onclick="renderLoginAndRegisterPage()" class="px-4 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors duration-200">Login/Cadastro</button>
+            <button onclick="renderRegisterPage()" class="px-4 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors duration-200">Login/Cadastro</button>
         `;
     }
 }
 
-window.renderLoginAndRegisterPage = function() {
+window.renderRegisterPage = function() {
     pageContent.innerHTML = `
-        <div class="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-8">
-            <!-- Login Form -->
-            <div class="md:w-1/2 p-6 bg-gray-50 rounded-lg shadow-md">
-                <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">Login</h2>
-                <form id="login-form">
-                    <div class="mb-4">
-                        <label for="login-email" class="block text-gray-700 font-semibold mb-2">E-mail</label>
-                        <input type="email" id="login-email" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <div class="mb-6">
-                        <label for="login-password" class="block text-gray-700 font-semibold mb-2">Senha</label>
-                        <input type="password" id="login-password" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    </div>
-                    <button type="submit" class="w-full px-4 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">Entrar</button>
-                </form>
-            </div>
-
+        <div class="flex flex-col items-center justify-center space-y-8 p-6">
             <!-- Registration Form -->
-            <div class="md:w-1/2 p-6 bg-gray-50 rounded-lg shadow-md">
+            <div class="w-full max-w-md p-6 bg-gray-50 rounded-lg shadow-md">
                 <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">Cadastro</h2>
                 <form id="register-form">
                     <div class="mb-4">
@@ -63,21 +46,85 @@ window.renderLoginAndRegisterPage = function() {
                         <label for="register-password" class="block text-gray-700 font-semibold mb-2">Senha</label>
                         <input type="password" id="register-password" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     </div>
+                    <div class="mb-6">
+                        <label for="register-confirm-password" class="block text-gray-700 font-semibold mb-2">Confirmar Senha</label>
+                        <input type="password" id="register-confirm-password" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
                     <button type="submit" class="w-full px-4 py-3 bg-green-600 text-white rounded-full font-semibold hover:bg-green-700 transition-colors duration-200">Cadastrar</button>
                 </form>
             </div>
+            <div class="text-center text-sm text-gray-600">
+                Já tem uma conta? <span onclick="renderLoginPage()" class="text-blue-600 cursor-pointer hover:underline">Faça login aqui</span>.
+            </div>
         </div>
     `;
-    
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            showModal('Erro', 'As senhas não coincidem!');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                showModal('Sucesso', 'Cadastro realizado com sucesso! Você já pode fazer login.');
+                document.getElementById('register-form').reset();
+                renderLoginPage();
+            } else {
+                showModal('Erro', result.error);
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            showModal('Erro', 'Ocorreu um erro de conexão.');
+        }
+    });
+}
+
+window.renderLoginPage = function() {
+    pageContent.innerHTML = `
+        <div class="flex flex-col items-center justify-center space-y-8 p-6">
+            <!-- Login Form -->
+            <div class="w-full max-w-md p-6 bg-gray-50 rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">Login</h2>
+                <form id="login-form">
+                    <div class="mb-4">
+                        <label for="login-email-or-name" class="block text-gray-700 font-semibold mb-2">E-mail ou Nome</label>
+                        <input type="text" id="login-email-or-name" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="login-password" class="block text-gray-700 font-semibold mb-2">Senha</label>
+                        <input type="password" id="login-password" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full px-4 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors duration-200">Entrar</button>
+                </form>
+            </div>
+            <div class="text-center text-sm text-gray-600">
+                Não tem uma conta? <span onclick="renderRegisterPage()" class="text-green-600 cursor-pointer hover:underline">Cadastre-se aqui</span>.
+            </div>
+        </div>
+    `;
+
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email').value;
+        const identifier = document.getElementById('login-email-or-name').value;
         const password = document.getElementById('login-password').value;
         try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ identifier, password })
             });
             const result = await response.json();
             if (response.ok) {
@@ -90,30 +137,6 @@ window.renderLoginAndRegisterPage = function() {
             }
         } catch (error) {
             console.error('Login error:', error);
-            showModal('Erro', 'Ocorreu um erro de conexão.');
-        }
-    });
-
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('register-name').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        try {
-            const response = await fetch(`${API_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
-            });
-            const result = await response.json();
-            if (response.ok) {
-                showModal('Sucesso', 'Cadastro realizado com sucesso! Você já pode fazer login.');
-                document.getElementById('register-form').reset();
-            } else {
-                showModal('Erro', result.error);
-            }
-        } catch (error) {
-            console.error('Registration error:', error);
             showModal('Erro', 'Ocorreu um erro de conexão.');
         }
     });
@@ -353,6 +376,6 @@ window.closeModal = function(id) {
 
 // Inicia a aplicação
 window.onload = function() {
-    renderHomePage();
-    renderAuthSection(); // Exibe a seção de login/cadastro
+    renderRegisterPage(); // Primeira página a ser carregada
+    renderAuthSection();
 };
