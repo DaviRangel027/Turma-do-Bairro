@@ -1,0 +1,8 @@
+/*
+ * Arquivo de estilos globais para o projeto Turma do Bairro.
+ * Ele contém as configurações básicas de fonte e cor de fundo.
+ */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+}

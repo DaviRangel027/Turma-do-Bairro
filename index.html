@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turma do Bairro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Container Principal do App -->
+    <div id="app" class="flex flex-col min-h-screen">
+        
+        <!-- Header -->
+        <header class="bg-white shadow-md py-4 px-6 md:px-12 flex items-center justify-between">
+            <h1 onclick="renderHomePage()" class="text-3xl font-bold text-blue-600 cursor-pointer">Turma do Bairro</h1>
+            <div id="auth-section" class="flex items-center space-x-4">
+                <!-- Conteúdo dinâmico de login/usuário -->
+            </div>
+        </header>
+
+        <!-- Conteúdo Principal -->
+        <main class="flex-grow p-4 md:p-8">
+            <!-- As páginas serão exibidas aqui -->
+            <div id="page-content" class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6">
+                <!-- Conteúdo da página inicial (lista de serviços) -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white text-center py-4 text-sm">
+            <p>&copy; 2025 Turma do Bairro. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- Referência para o script principal -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
