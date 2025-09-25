@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from firebase_admin import credentials, firestore, auth as firebase_auth
 import firebase_admin
 
-# Substitua com o caminho para o seu arquivo de credenciais do Firebase
+
 FIREBASE_CREDENTIALS_PATH = 'firebase-adminsdk.json'
 PROJECT_ID = 'turma-do-bairro-e916b'
 
